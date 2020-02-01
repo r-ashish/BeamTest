@@ -1,10 +1,18 @@
+const Scooter = require('../models/scooter');
 
 exports.getScooters = (req, res) => {
     const lat = req.query.lat;
     const lng = req.query.lng;
     const numScooters = req.query.numScooters;
     const radius = req.query.radius;
-    res.send(`Scooter list coming soon!`);
+
+    Scooter.find({}, function(err, scooters) {
+        if (!err){
+            res.send(scooters);
+        } else {
+            res.send(err.message)
+        };
+    });
 }
 
 exports.getScooter = (req, res) => {
