@@ -1,10 +1,12 @@
 const express = require('express');
 const mongoose = require('mongoose');
+const path = require('path');
 const cors = require('cors');
 const app = express();
 const apiRouter = require('./router/api');
 const PORT = 3000;
 
+app.use(express.static(path.join(__dirname, 'client/build')));
 app.use(cors({credentials: true, origin: true}));
 app.use('/api', apiRouter);
 
