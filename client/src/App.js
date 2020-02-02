@@ -45,7 +45,7 @@ class App extends React.Component {
   }
 
   updateCenter = (lat, lng) => {
-    this.setState({center: {lat, lng}, scooters: []}, () => this.loadScooters());
+    this.onConfigChange({center: {lat, lng}});
   }
 
   onConfigChange = (config) => {
