@@ -10,7 +10,7 @@ exports.getScooters = (req, res) => {
     }
 
     const numScooters = parseInt(req.query.count) || 50; // default 50 scooters
-    const radius = parseInt(req.query.radius) || 5; // default 5km
+    const radius = parseFloat(req.query.radius) || 5; // default 5km
 
     Scooter.findNearest(radius, lat, lng)
     .limit(numScooters)

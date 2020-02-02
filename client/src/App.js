@@ -1,8 +1,9 @@
 import React from 'react';
 import GoogleMapReact from 'google-map-react';
+import ConfigController from './ConfigController';
 import ScooterPin from './ScooterPin';
 import CurrentPin from './CurrentPin';
-import './App.css';
+import './App.scss';
 
 class App extends React.Component {
   constructor(props) {
@@ -12,7 +13,9 @@ class App extends React.Component {
       center: {lat: 1.36,lng: 103.82},
       zoom: 12,
       loading: false,
-      delayTime: 2200
+      delayTime: 2200,
+      count: 100,
+      radius: 5
     }
   }
 
@@ -25,8 +28,8 @@ class App extends React.Component {
     const params = {
       lat: this.state.center.lat,
       lng: this.state.center.lng,
-      count: 100,
-      radius: 5
+      count: this.state.count,
+      radius: this.state.radius
     };
     apiUrl.search = new URLSearchParams(params).toString();
 
@@ -45,11 +48,23 @@ class App extends React.Component {
     this.setState({center: {lat, lng}, scooters: []}, () => this.loadScooters());
   }
 
+  onConfigChange = (config) => {
+    this.setState({...config, scooters: []}, () => this.loadScooters());
+  }
+
   render() {
     return (
-      <div className="App" style={{display: 'flex'}}>
-        <div style={{height: '100vh', width: '25%', boxShadow: '9px 0px 9px 0px rgba(0,0,0,0.2)', zIndex: 99}}></div>
-        <div style={{ height: '100vh', flex: 1 }}>
+      <div className="App">
+        <div className="config-controller">
+          <ConfigController
+            lat={this.state.center.lat}
+            lng={this.state.center.lng}
+            count={this.state.count}
+            radius={this.state.radius}
+            delay={this.state.delayTime}
+            onChange={this.onConfigChange} />
+        </div>
+        <div className="map-container">
           <GoogleMapReact
             onClick={(o) => this.updateCenter(o.lat, o.lng)}
             bootstrapURLKeys={{ key: 'AIzaSyBZ-W0xk6vyjkOa_gipMO5BjvcCyMqw-l4' }}
