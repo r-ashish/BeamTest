@@ -26,4 +26,18 @@ ScooterSchema.index({ location: "2dsphere" });
 
 const Scooter = mongoose.model('Scooter', ScooterSchema);
 
+Scooter.findNearest = (radius, lat, lng) => {
+  return Scooter.find({
+    location: {
+        $near: {
+            $maxDistance: radius*1000, //kms to metres
+            $geometry: {
+                type: "Point",
+                coordinates: [lng, lat]
+            }
+        }
+    }
+  });
+}
+
 module.exports = Scooter;
