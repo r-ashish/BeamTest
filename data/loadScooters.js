@@ -1,6 +1,8 @@
 const Scooter = require('../models/scooter');
-const scootersData = require('./scootersFixture');
+const scooterGenerator = require('./randomDataGenerator');
 const mongoose = require('mongoose');
+
+const scootersData = scooterGenerator();
 
 mongoose.connect('mongodb://localhost:27017/db', {
    useNewUrlParser: true, useUnifiedTopology: true 

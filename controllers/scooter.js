@@ -3,14 +3,31 @@ const Scooter = require('../models/scooter');
 exports.getScooters = (req, res) => {
     const lat = req.query.lat;
     const lng = req.query.lng;
-    const numScooters = req.query.numScooters;
-    const radius = req.query.radius;
 
-    Scooter.find({}, function(err, scooters) {
+    if(!lat || !lng) {
+        res.send({success: false, msg: 'lat/ lng missing'});
+        return;
+    }
+    const numScooters = parseInt(req.query.count) || 50; // default 50 scooters
+    const radius = (parseInt(req.query.radius) || 5)*1000; // default 5km
+
+    Scooter.find({
+        location: {
+            $near: {
+                $maxDistance: radius,
+                $geometry: {
+                    type: "Point",
+                    coordinates: [lng, lat]
+                }
+            }
+        }
+    })
+    .limit(numScooters)
+    .exec((err, scooters) => {
         if (!err){
             res.send(scooters);
         } else {
-            res.send(err.message)
+            res.send(err.message);
         };
     });
 }

@@ -1,14 +1,29 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
-const scooterSchema = new Schema({
-  lat: { type: Number, required: true },
-  lng: { type: Number, required: true },
+const ScooterSchema = new Schema({
+  location: {
+    type: { type: String },
+    coordinates: [] // lng, lat
+  },
   model: { type: String, required: true },
-  created_at: { type: Date, default: Date.now },
-  updated_at: { type: Date, default: Date.now },
-}, { versionKey: false });
 
-const Scooter = mongoose.model('Scooter', scooterSchema);
+}, 
+{
+  versionKey: false,
+  timestamps: true,
+  toJSON: {
+    transform: (doc, ret) => {
+      ret.lat = ret.location.coordinates[1]
+      ret.lng = ret.location.coordinates[0]
+
+      delete ret.location;
+    }
+  }
+});
+
+ScooterSchema.index({ location: "2dsphere" });
+
+const Scooter = mongoose.model('Scooter', ScooterSchema);
 
 module.exports = Scooter;
