@@ -5,12 +5,13 @@ const cors = require('cors');
 const app = express();
 const apiRouter = require('./router/api');
 const PORT = 3000;
+const mongoDbUrl = process.env.MONGO_URL || 'mongodb://localhost:27017/db';
 
 app.use(express.static(path.join(__dirname, 'client/build')));
 app.use(cors({credentials: true, origin: true}));
 app.use('/api', apiRouter);
 
-mongoose.connect('mongodb://localhost:27017/db', {
+mongoose.connect(mongoDbUrl, {
    useNewUrlParser: true, useUnifiedTopology: true
 }).then(() => {
     console.log('mongodb started.');
