@@ -4,7 +4,7 @@ const alphabets = "abcdefghijklmnopqrstuvwxyz".toUpperCase();
 const randomAlphabet = () => alphabets[randomIndex(0, 25)];
 
 const generateRandomScooter = () => {
-    const lng = random(103.6, 103.92);
+    const lng = random(103.67, 103.92);
     const lat = random(1.305, 1.405);
 
     return {
