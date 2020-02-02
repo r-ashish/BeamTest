@@ -9,23 +9,40 @@ class App extends React.Component {
     super(props);
     this.state = {
       scooters: [],
-      center: {
-        lat: 1.36,
-        lng: 103.82
-      },
-      zoom: 12
+      center: {lat: 1.36,lng: 103.82},
+      zoom: 12,
+      loading: false,
+      delayTime: 2200
     }
+  }
+
+  componentDidMount() {
     this.loadScooters();
   }
 
   loadScooters() {
-    fetch('http://localhost:3000/api/scooters?lat=1.36&lng=103.82&count=100&radius=20')
-    .then(response => response.json())
-    .then(response => this.setState({scooters: response}));
+    const apiUrl = new URL('http://localhost:3000/api/scooters');
+    const params = {
+      lat: this.state.center.lat,
+      lng: this.state.center.lng,
+      count: 100,
+      radius: 5
+    };
+    apiUrl.search = new URLSearchParams(params).toString();
+
+    this.setState({loading: true});
+
+    // since localhost responds quickly
+    // so adding some delay to simulate actual API calls (to show loading animations etc.)
+    setTimeout(()=> {
+      fetch(apiUrl)
+      .then(response => response.json())
+      .then(response => this.setState({scooters: response, loading: false}));
+    }, this.state.delayTime);
   }
 
   updateCenter = (lat, lng) => {
-    this.setState({center: {lat, lng}});
+    this.setState({center: {lat, lng}, scooters: []}, () => this.loadScooters());
   }
 
   render() {
@@ -39,7 +56,7 @@ class App extends React.Component {
             center={this.state.center}
             defaultZoom={this.state.zoom}
           >
-            <CurrentPin lat={this.state.center.lat} lng={this.state.center.lng} />
+            <CurrentPin loading={this.state.loading} lat={this.state.center.lat} lng={this.state.center.lng} />
             {this.state.scooters.map(scooter => {
               return <ScooterPin key={scooter._id} lat={scooter.lat} lng={scooter.lng} />
             })}
